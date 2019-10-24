@@ -1,0 +1,10 @@
+package Rules 
+
+	context Operation::SetTask() pre DurationNotNegativ: duration >= 0
+	context Operation::SetTask() pre OverlappingProdTime: startTime >= predecessor.EndTime
+	context Machine::SetEntry(op: Operation) pre StartTimeCollision: self.Workload->forAll(v|v.StartTime < op.Starttime and v.EndTime > op.Starttime)
+	context Machine::SetEntry(op: Operation) pre EndTimeCollision: self.Workload->forAll(v|v.StartTime < op.EndTime and v.EndTime > op.EndTtime)
+	context Machine::SetEntry() post CapacityCheck: self.Capacity >= self.Workload.Duration->sum()
+	context Planner::Plan() post CheckProductionTime: self.ProductionTime >=self.Operation.Duration->sum()
+
+endpackage
